@@ -43,6 +43,7 @@ from sklearn.preprocessing import StandardScaler
 sc = StandardScaler()
 X_train = sc.fit_transform(X_train)
 X_test = sc.transform(X_test)
+##END OF DATA PREPROCESSING
 
 # Part 2 - No lets make an ANN ! 
 #Iporting the Keras libraries and packages
@@ -94,3 +95,26 @@ new_prediction=(new_prediction>0.5)
 # Making the Confusion Matrix
 from sklearn.metrics import confusion_matrix
 cm = confusion_matrix(y_test, y_pred)     
+
+# Part 4 Evaluating, oproving and tunign the ANN
+#Evaluating the ANN
+
+
+from keras.wrappers.scikit_learn import KerasClassifier
+from sklearn.model_selection import cross_val_score
+from keras.models import Sequential
+from keras.layers import Dense
+def build_classifier():
+    classifier = Sequential()
+    classifier.add(Dense(output_dim=6,init='uniform', activation='relu', input_dim=11))
+    classifier.add(Dense(output_dim=6,init='uniform', activation='relu'))
+    classifier.add(Dense(output_dim=1,init='uniform', activation='sigmoid')) 
+    classifier.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'] )
+    return classifier
+classifier = KerasClassifier(build_fn=build_classifier, batch_size=10, nb_epoch=100)
+accuracies = cross_val_score(estimator=classifier,X=X_train, y=y_train, cv=10, n_jobs=1)
+mean=accuracies.mean()
+variance=accuracies.std()
+#improving the ANN
+# Dropout regularization to reduce overfitting if needed
+
